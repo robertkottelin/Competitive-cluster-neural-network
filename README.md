@@ -23,4 +23,6 @@ neurons displaying the highest output will fire easier and display an even highe
 a similar input pattern is presented to the network. The idea is that updating the connection weights
 and indirectly, therefore each respective clusters’ neuron activity will create a specific “firing”
 fingerprint of the network for each group of input patterns existing in the input data.
+
+Small scale example of architecture:
 ![image](https://user-images.githubusercontent.com/74188272/201863534-f9b1f21c-fcd5-4c66-943e-edd98ed8da30.png)
