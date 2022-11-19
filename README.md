@@ -1,7 +1,7 @@
 # Competitive-cluster-neural-network
 Unsupervised deep neural network to learn and detect liquidity patterns
 
-Input data is passed along to the first layer of the network, which is connected to the next layer. The input data in
+The input data in
 the first layer excites specific neurons connected to all neurons in the next layer. The neurons in the
 second layer that receive a signal from incoming connections from the first layer’s neurons surpass a
 specific threshold and will fire. The neurons in the second and third layers are organised into clusters, where
