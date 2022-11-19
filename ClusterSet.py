@@ -58,7 +58,7 @@ class ClusterSet(abc.ABC):
                 theMaximumActiveCluster=theCluster
             else:
                 pass  
-#        print(theMaximumActiveCluster.GetMaximumActiveNeuron().GetID() + " "+ str(theMaximumActiveCluster.GetMaximumActiveNeuron().GetActivity()) )  
+#        print(theMaximumActiveCluster.GetMaximumActiveNeuron().GetID() + " "+ str(theMaximumActiveCluster.GetMaximumActiveNeuron().GetActivity()) )  //update
         return theMaximumActiveCluster
     
     def Fire(self)-> None:

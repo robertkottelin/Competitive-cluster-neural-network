@@ -53,8 +53,10 @@ def GetDataFirstOrderPolynomialReverse(theIndex:int,theIndexMax: int):
 
 theNumberNeuronsPerInputLayer=100
 theNumberNeuronsPerInhibitoryCluster01=10
+# theNumberNeuronsPerInhibitoryCluster01=10
 theNumberNeuronsPerInhibitoryCluster02=10
 theNumberClustersPerInhibitoryLayer01=10
+# theNumberClustersPerInhibitoryLayer01=10
 theNumberClustersPerInhibitoryLayer02=10
 theUpdateStrength=0.01
 

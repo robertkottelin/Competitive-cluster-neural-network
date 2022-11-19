@@ -50,4 +50,4 @@ class Cluster(NeuronSet):
     def Update(self,theUpdateStrength :float) -> None:
         self.GetMaximumActiveNeuron().Update(theUpdateStrength)
         
-        #reload?
+        #reload
