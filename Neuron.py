@@ -222,7 +222,7 @@ class InhibitoryNeuron(Neuron):
             
             theUpdateWeight=theUpdateStrength*(theConnectedActivity[theConnectedID]/theTotalConnectedActivity-theWeight.GetValue())
 
-            theWeight.Update(theUpdate=theUpdateWeight)
+            theWeight.Update(theUpdate=theUpdateWeight) # Update weight calculations
             
             theWeightSum+=theWeight.GetValue()
             
