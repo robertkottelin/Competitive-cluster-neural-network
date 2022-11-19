@@ -1,5 +1,5 @@
 # Competitive-cluster-neural-network
-Unsupervised deep neural network to learn and detect patterns
+Unsupervised deep neural network to learn and detect liquidity patterns
 
 Each cluster will only fire one neuron, and the neuron that does fire also
 diminishes the output of all other neurons in that cluster through inhibitory connections. Each neuron
