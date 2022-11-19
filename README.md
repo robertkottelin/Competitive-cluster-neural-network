@@ -3,8 +3,8 @@ Unsupervised deep neural network to learn and detect liquidity patterns
 
 The input data in
 the first layer excites specific neurons connected to all neurons in the next layer. The neurons in the
-second layer that receive a signal from incoming connections from the first layer’s neurons surpass a
-specific threshold and will fire. The neurons in the second and third layers are organised into clusters, where
+second layer that surpass a
+specific threshold will fire. The neurons in the second and third layers are organised into clusters, where
 every neuron in that cluster is equipped with inhibitory connections to neurons within the same cluster.
 As a result, only the most excited neuron will fire and pass along its signal to the third layer.
 Each cluster will only fire one neuron, and the neuron that does fire also
