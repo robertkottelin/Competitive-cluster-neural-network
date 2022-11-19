@@ -25,4 +25,5 @@ and indirectly, therefore each respective clusters’ neuron activity will creat
 fingerprint of the network for each group of input patterns existing in the input data.
 
 Small scale example of architecture:
+
 ![image](https://user-images.githubusercontent.com/74188272/201863534-f9b1f21c-fcd5-4c66-943e-edd98ed8da30.png)
