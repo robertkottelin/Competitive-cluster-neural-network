@@ -231,3 +231,18 @@ class InhibitoryNeuron(Neuron):
         for theConnectedID in theConnectedIDSet:
             
             theWeightSet[theConnectedID].SetValue(theValue=theWeightSet[theConnectedID].GetValue()/theWeightSum)
+            
+                    for theConnectedID in theConnectedActivity.keys():
+            
+            theWeight=self.GetWeight(theConnectedID=theConnectedID)
+            
+            theUpdateWeight=theUpdateStrength*(theConnectedActivity[theConnectedID]/theTotalConnectedActivity-theWeight.GetValue())
+
+            theWeight.Update(theUpdate=theUpdateWeight) # Update weight calculations
+            
+            theWeightSum+=theWeight.GetValue()
+            
+            theWeightSet[theConnectedID]=theWeight
+            
+            theWeight=Neuron.__weakrefoffset__/cluster.neuron
+            
