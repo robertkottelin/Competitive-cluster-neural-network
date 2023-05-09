@@ -4,6 +4,8 @@ Introducing the COMPANN (Competitive Artificial Neural Network), a state-of-the-
 
 The COMPANN Neural Network is a multi-layered system composed of clusters of neurons, each with their unique set of weights and outputs. Its architecture is inspired by the biological neural networks found in the brain, contributing to the network's adaptive and efficient learning capabilities.
 
+![neural.](neural.png)
+
 ## Innovative Design and Architecture
 
 Each layer in the COMPANN Neural Network contains numerous clusters, with each cluster consisting of several neurons. The unique feature of the COMPANN lies in the competition among the neurons within each cluster during the activation process. This competition results in only one neuron (the "winner") having a non-zero output, mimicking the "winner-takes-all" nature of biological neural networks.
