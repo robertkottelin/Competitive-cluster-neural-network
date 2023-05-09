@@ -195,33 +195,33 @@ impl fmt::Display for COMPANN {
 fn main() -> io::Result<()> {
     let mut compann = COMPANN::new(
         vec![
-            (20, 20, 100); 20 // 20 clusters, 20 neurons each, 100 input neurons, 20 layers
+            (20, 20, 45); 20 // 20 clusters, 20 neurons each, 45 input neurons, 20 layers
         ],
         0.001, // learning_rate
     );
 
-    // Generate a random line as input
-    let mut rng = thread_rng();
-    let inclinations = [-45.0, 45.0];
-    let inclination = inclinations.choose(&mut rng).unwrap();
+    // // Generate a random line as input
+    // let mut rng = thread_rng();
+    // let inclinations = [-45.0, 45.0];
+    // let inclination = inclinations.choose(&mut rng).unwrap();
     
-    let line_func = match inclination {
-        45.0 => |x| x,
-        -45.0 => |x| 100.0 - x,
-        _ => unreachable!(),
-    };
+    // let line_func = match inclination {
+    //     45.0 => |x| x,
+    //     -45.0 => |x| 100.0 - x,
+    //     _ => unreachable!(),
+    // };
 
-    let inputs: Vec<f64> = (0..100).map(|x| line_func(x as f64)).collect();
-    // Print the input vector
-    println!("{:?}", inputs);
+    // let inputs: Vec<f64> = (0..100).map(|x| line_func(x as f64)).collect();
+    // // Print the input vector
+    // println!("{:?}", inputs);
 
-    // Train the network on the input vector
-    for _ in 0..10000 {
-        compann.train(inputs.clone());
-    }
+    // // Train the network on the input vector
+    // for _ in 0..10000 {
+    //     compann.train(inputs.clone());
+    // }
     
-    /* Train on formatted vectors as input
-    let file = File::open(Path::new("formatted_vectors.txt"))?;
+    // Train on formatted vectors as input
+    let file = File::open(Path::new("formatted_vectors_all.txt"))?;
 
     let reader = io::BufReader::new(file);
 
@@ -237,8 +237,7 @@ fn main() -> io::Result<()> {
                 eprintln!("Could not parse line '{}': {}", line, e);
             },
         }
-    }
-    */
+    }    
 
     // Write the trained network to a file named 'output.txt'
     let mut output_file = LineWriter::new(File::create("output.txt")?);

@@ -5,20 +5,23 @@ def process_file(input_file, output_file):
     # Load the data
     df = pd.read_csv(input_file, quotechar='"')
 
-    # Extract FAM_vector data
-    fam_vectors = df["FAM_vector"]
-
-    # Process vectors into a format that Rust can read
+    # Process each vector column into a format that Rust can read
     formatted_vectors = []
-    for vector in fam_vectors:
-        # Use regex to find all numbers in the string
-        numbers = re.findall(r"[-+]?\d*\.\d+e[-+]?\d+", vector)
+    for col in df.columns:
+        # Ignore non-vector columns
+        if col.endswith("_vector"):
+            # Extract vector data
+            vectors = df[col]
+            # Process vectors into a format that Rust can read
+            for vector in vectors:
+                # Use regex to find all numbers in the string
+                numbers = re.findall(r"[-+]?\d*\.\d+e[-+]?\d+", vector)
 
-        # Convert to floats and format as Rust array
-        float_numbers = [float(num) for num in numbers]
-        formatted_vector = " ".join(f"{num}" for num in float_numbers)
+                # Convert to floats and format as Rust array
+                float_numbers = [float(num) for num in numbers]
+                formatted_vector = " ".join(f"{num}" for num in float_numbers)
 
-        formatted_vectors.append(formatted_vector)
+                formatted_vectors.append(formatted_vector)
 
     # Remove empty lines
     formatted_vectors = [vector for vector in formatted_vectors if vector]
@@ -28,4 +31,4 @@ def process_file(input_file, output_file):
         f.write("\n".join(formatted_vectors))
 
 if __name__ == "__main__":
-    process_file("vectors.txt", "formatted_vectors.txt")
+    process_file("vectors.txt", "formatted_vectors_all.txt")
