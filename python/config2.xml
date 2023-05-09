@@ -1,0 +1,28 @@
+<config>
+    <DIRECTORY>
+        <IO>C:\Users\MatsWallden\Documents\SRCPython03\IO</IO>
+        <DATA>X:\COVID\COVIDQPCR\DATA\EXPORTS</DATA>
+		<!--X:\COVID\COVIDQPCR\DATA\EXPORTS-->
+        <PRINT>X:\COVID\COVIDQPCR\DATA\EXPORTS\AUDIT</PRINT>
+		<!--X:\COVID\COVIDQPCR\DATA\EXPORTS\AUDIT-->
+        <COMPILER>C:\Users\MatsWallden\Documents\SRCPython03\QPCR_RESULT_COMPILER</COMPILER>
+    </DIRECTORY>
+    <CONTROLS>
+        <CONTROL id="PCA" type="POSITIVE"></CONTROL>
+		<CONTROL id="PCB" type="POSITIVE"></CONTROL>
+        <CONTROL id="NTC" type="NEGATIVE"></CONTROL>
+		<CONTROL id="ELUCONTROL" type="NEGATIVE"></CONTROL>
+        <CONTROL id="*" type="EXTRACTION"></CONTROL>
+    </CONTROLS>
+	<TARGETS>
+        <TARGET id="N1" origin="VIRAL"></TARGET>
+        <TARGET id="N2" origin="VIRAL"></TARGET>
+        <TARGET id="RP" origin="HUMAN"></TARGET>
+    </TARGETS>
+	<PARAMETERS>
+        <PARAMETER id="THRESH_CT" value="40.0"></PARAMETER>
+        <PARAMETER id="THRESH_CV_CT" value="INF"></PARAMETER>
+		<PARAMETER id="THRESH_CT_EXTRACTION" value="29.0"></PARAMETER>
+		<PARAMETER id="THRESH_FRACTION_CONTROLS" value="0.16"></PARAMETER>
+    </PARAMETERS>
+</config>
