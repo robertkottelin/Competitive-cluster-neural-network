@@ -1,3 +1,7 @@
+use std::fmt;
+use std::fs::File;
+use std::io::{self, BufRead, LineWriter, Write};
+use std::path::Path;
 use std::cmp::Ordering;
 use rand::prelude::*;
 
@@ -10,8 +14,15 @@ struct Neuron {
 impl Neuron {
     fn new(input_count: usize) -> Neuron {
         let mut rng = thread_rng();
-        let weights: Vec<f64> = (0..input_count).map(|_| rng.gen()).collect();
-        let total_weight: f64 = weights.iter().sum();
+        let mut weights: Vec<f64>;
+        let mut total_weight: f64;
+        loop {
+            weights = (0..input_count).map(|_| rng.gen_range(-0.1..=0.1)).collect();
+            total_weight = weights.iter().sum();
+            if total_weight.abs() > 1e-6 { // Use an epsilon to account for floating-point error
+                break;
+            }
+        }
         let normalized_weights: Vec<f64> = weights.iter().map(|w| w / total_weight).collect();
 
         Neuron {
@@ -21,7 +32,8 @@ impl Neuron {
     }
 
     fn activate(&mut self, inputs: &Vec<f64>) {
-        self.output = self.weights.iter().zip(inputs.iter()).map(|(w, i)| w * i).sum();
+        let net_input: f64 = self.weights.iter().zip(inputs.iter()).map(|(w, i)| w * i).sum();
+        self.output = 1.0 / (1.0 + (-net_input).exp());
     }
     
     fn update_weights(&mut self, inputs: &Vec<f64>, learning_rate: f64, cjk: f64, nk: f64) {
@@ -122,24 +134,80 @@ impl COMPANN {
     }
 }
 
-fn main() {
+impl fmt::Display for COMPANN {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "COMPANN {{\n")?;
+        for (i, layer) in self.layers.iter().enumerate() {
+            write!(f, "    Layer {} {{\n", i)?;
+            for (j, cluster) in layer.clusters.iter().enumerate() {
+                write!(f, "        Cluster {} {{\n", j)?;
+                for (k, neuron) in cluster.neurons.iter().enumerate() {
+                    write!(f, "            Neuron {} {{\n                Weights: {:?}\n                Output: {}\n            }}\n", k, neuron.weights, neuron.output)?;
+                }
+                write!(f, "        }}\n")?;
+            }
+            write!(f, "    }}\n")?;
+        }
+        write!(f, "}}\n")?;
+        Ok(())
+    }
+}
+
+
+fn main() -> io::Result<()> {
     let mut compann = COMPANN::new(
         vec![
-            (2, 3, 3), // 2 clusters, 3 neurons each, 3 inputs each
-            (2, 3, 2), // 2 clusters, 3 neurons each, 2 inputs each
+            (10, 5, 100); 5 // 10 clusters, 5 neurons each, 100 inputs each for 5 layers
         ],
-        0.1, // learning_rate
+        0.001, // learning_rate
     );
 
-    let input_patterns = vec![
-        vec![0.1, 0.2, 0.7],
-        vec![0.3, 0.3, 0.4],
-        vec![0.6, 0.2, 0.2],
-    ];
+    // // Open the file
+    // let file = File::open(Path::new("formatted_vectors.txt"))?;
 
-    for pattern in input_patterns {
-        compann.train(pattern);
+    // // Create a BufReader for the file
+    // let reader = io::BufReader::new(file);
+
+    // // Read each line
+    // for line in reader.lines() {
+    //     let line = line?;
+    //     // Split the line into numbers, parse each number into a float, and collect into a vector
+    //     let vector: Result<Vec<f64>, _> = line.split_whitespace().map(|s| s.parse()).collect();
+    //     match vector {
+    //         Ok(input_pattern) => {
+    //             compann.train(input_pattern);
+    //         },
+    //         Err(e) => {
+    //             eprintln!("Could not parse line '{}': {}", line, e);
+    //         },
+    //     }
+    // }
+
+    // Generate random line as input
+    let mut rng = thread_rng();
+    let inclinations = [-45.0, 45.0];
+    let inclination = inclinations.choose(&mut rng).unwrap();
+    
+    let line_func = match inclination {
+        45.0 => |x| x,
+        -45.0 => |x| 100.0 - x,
+        _ => unreachable!(),
+    };
+
+    let inputs: Vec<f64> = (0..100).map(|x| line_func(x as f64)).collect();
+    // print input
+    println!("{:?}", inputs);
+
+    // Train network on line
+    for _ in 0..10000 {
+        compann.train(inputs.clone());
     }
 
     println!("{:?}", compann);
+
+    let mut output_file = LineWriter::new(File::create("output.txt")?);
+    // Write the output to a file
+    write!(output_file, "{}", compann.to_string())?;
+
+    Ok(())
 }
