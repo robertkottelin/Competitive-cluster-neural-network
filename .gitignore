@@ -1,7 +1,5 @@
-/target
-formatted_vectors_all.txt
-formatted_vectors_FAM.txt
-output.txt
+
 # ignore everything in the ./rust/target/ folder including subfolders
 rust/target/
 rust/target/debug/
+rust/Cargo.lock
