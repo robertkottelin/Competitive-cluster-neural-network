@@ -1,6 +1,6 @@
 use std::fmt;
 use std::fs::File;
-use std::io::{self, BufRead, BufReader, LineWriter, Write};
+use std::io::{self, BufRead, BufReader};
 use std::path::Path;
 use std::cmp::Ordering;
 use rand::prelude::*;
@@ -190,6 +190,8 @@ impl fmt::Display for COMPANN {
     }
 }
 
+use rusqlite::{params, Connection, Result};
+
 fn main() -> io::Result<()> {
     let file_path = "formatted_vectors_all.txt";
     let input_file = File::open(Path::new(file_path))?;
@@ -205,13 +207,13 @@ fn main() -> io::Result<()> {
     // Setup the neural network with the determined input_count
     let mut compann = COMPANN::new(
         vec![
-            (80, 80, input_count); 20 // X clusters, Y neurons each, dynamically determined input_count, Z layers
+            (40, 10, input_count); 10 // 80 clusters, 80 neurons each, dynamically determined input_count, 20 layers
         ],
         0.001, // learning_rate
     );
 
-    // Implement loop to train many times
-    for _ in 0..10 {
+    // Train the network
+    for _ in 0..2 {
         let file = File::open(Path::new(file_path))?;
         let reader = BufReader::new(file);
         for line in reader.lines() {
@@ -228,9 +230,36 @@ fn main() -> io::Result<()> {
         }
     }
 
-    // Write the trained network to a file named 'output.txt'
-    let mut output_file = LineWriter::new(File::create("output.txt")?);
-    write!(output_file, "{}", compann)?;
+    // Open a connection to a new or existing SQLite database
+    let conn = Connection::open("network_data.db").map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+
+    // Create a table to store network data
+    match conn.execute(
+        "CREATE TABLE IF NOT EXISTS neuron_data (
+            layer_id INTEGER,
+            cluster_id INTEGER,
+            neuron_id INTEGER,
+            weights TEXT,
+            output REAL
+         )",
+        [],
+    ) {
+        Ok(_) => {}, // Successfully created table, do nothing or log success
+        Err(e) => return Err(e.into()), // Convert to io::Error and return
+    }
+    
+    // Insert data into the database
+    for (i, layer) in compann.layers.iter().enumerate() {
+        for (j, cluster) in layer.clusters.iter().enumerate() {
+            for (k, neuron) in cluster.neurons.iter().enumerate() {
+                let weights_str = format!("{:?}", neuron.weights); // Convert weights to a string
+                conn.execute(
+                    "INSERT INTO neuron_data (layer_id, cluster_id, neuron_id, weights, output) VALUES (?1, ?2, ?3, ?4, ?5)",
+                    params![i, j, k, weights_str, neuron.output],
+                );
+            }
+        }
+    }
 
     Ok(())
 }
