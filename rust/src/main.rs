@@ -231,10 +231,13 @@ fn main() -> io::Result<()> {
     }
 
     // Open a connection to a new or existing SQLite database
-    let conn = Connection::open("network_data.db").map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e))?;
+    let conn = match Connection::open("network_data.db") {
+        Ok(conn) => conn,
+        Err(e) => return Err(std::io::Error::new(std::io::ErrorKind::Other, e)),
+    };
 
     // Create a table to store network data
-    match conn.execute(
+    if let Err(e) = conn.execute(
         "CREATE TABLE IF NOT EXISTS neuron_data (
             layer_id INTEGER,
             cluster_id INTEGER,
@@ -244,8 +247,7 @@ fn main() -> io::Result<()> {
          )",
         [],
     ) {
-        Ok(_) => {}, // Successfully created table, do nothing or log success
-        Err(e) => return Err(e.into()), // Convert to io::Error and return
+        return Err(std::io::Error::new(std::io::ErrorKind::Other, e));
     }
     
     // Insert data into the database
@@ -253,10 +255,12 @@ fn main() -> io::Result<()> {
         for (j, cluster) in layer.clusters.iter().enumerate() {
             for (k, neuron) in cluster.neurons.iter().enumerate() {
                 let weights_str = format!("{:?}", neuron.weights); // Convert weights to a string
-                conn.execute(
+                if let Err(e) = conn.execute(
                     "INSERT INTO neuron_data (layer_id, cluster_id, neuron_id, weights, output) VALUES (?1, ?2, ?3, ?4, ?5)",
                     params![i, j, k, weights_str, neuron.output],
-                );
+                ) {
+                    return Err(std::io::Error::new(std::io::ErrorKind::Other, e));
+                }
             }
         }
     }
