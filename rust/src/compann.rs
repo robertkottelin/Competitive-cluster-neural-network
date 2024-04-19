@@ -36,6 +36,31 @@ impl COMPANN {
             inputs = layer.clusters.iter().map(|c| c.neurons.iter().map(|n| n.output).sum()).collect();
         }
     }
+
+    // Set neuron data for the network
+    pub fn set_neuron_data(&mut self, layer_id: usize, cluster_id: usize, neuron_id: usize, weights: Vec<f64>, output: f64) -> Result<(), String> {
+        if let Some(layer) = self.layers.get_mut(layer_id) {
+            if let Some(cluster) = layer.clusters.get_mut(cluster_id) {
+                if let Some(neuron) = cluster.neurons.get_mut(neuron_id) {
+                    neuron.weights = weights;
+                    neuron.output = output;
+                    return Ok(());
+                }
+            }
+        }
+        Err("Neuron data setting failed due to invalid indices".to_string())
+    }
+
+    // Classify the input pattern
+    pub fn classify(&self, input_pattern: Vec<f64>) -> Vec<f64> {
+        let mut inputs = input_pattern;
+        for layer in &self.layers {
+            inputs = layer.clusters.iter().map(|cluster| {
+                cluster.neurons.iter().map(|neuron| neuron.output).sum::<f64>()
+            }).collect();
+        }
+        inputs
+    }
 }
 
 impl fmt::Display for COMPANN {
