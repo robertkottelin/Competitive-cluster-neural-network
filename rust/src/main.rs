@@ -40,6 +40,14 @@ pub fn open_connection(db_path: &str) -> Result<Connection, rusqlite::Error> {
     Connection::open(db_path)
 }
 
+fn insert_classification_result(conn: &Connection, id: i64, result: &str) -> SqliteResult<()> {
+    conn.execute(
+        "INSERT INTO results (id, result) VALUES (?1, ?2)",
+        params![id, result],
+    )?;
+    Ok(())
+}
+
 
 fn main() -> io::Result<()> {
     let file_path = "formatted_vectors_all.txt";
@@ -96,6 +104,16 @@ fn main() -> io::Result<()> {
     ) {
         return Err(std::io::Error::new(std::io::ErrorKind::Other, e));
     }
+
+    if let Err(e) = conn.execute(
+        "CREATE TABLE IF NOT EXISTS results (
+            id INTEGER PRIMARY KEY,
+            result TEXT
+         )",
+        [],
+    ) {
+        return Err(std::io::Error::new(std::io::ErrorKind::Other, e));
+    }
     
     // Insert data into the database
     for (i, layer) in compann.layers.iter().enumerate() {
@@ -125,13 +143,20 @@ fn main() -> io::Result<()> {
     // Use the classify function in the main program
     let file = File::open(Path::new(file_path))?;
     let reader = BufReader::new(file);
+    let mut id = 0;
     for line in reader.lines() {
         let line = line?;
         let vector: Result<Vec<f64>, _> = line.split_whitespace().map(|s| s.parse()).collect();
         match vector {
             Ok(input_pattern) => {
                 let classification_results = compann.classify(input_pattern);
-                println!("Classification Results: {:?}", classification_results);
+                let results_str = format!("{:?}", classification_results);
+                
+                // Insert the results into the database
+                insert_classification_result(&conn, id, &results_str)
+                    .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+                
+                id += 1; // Increment the identifier for the next result
             },
             Err(e) => {
                 eprintln!("Could not parse line '{}': {}", line, e);
