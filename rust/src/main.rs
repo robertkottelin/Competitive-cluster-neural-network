@@ -21,6 +21,7 @@ impl Neuron {
         loop {
             // Generate a vector of random weights for the neuron's inputs
             weights = (0..input_count).map(|_| rng.gen_range(-0.1..=0.1)).collect();
+            
             // Compute the total weight of the neuron's inputs
             total_weight = weights.iter().sum();
             // If the total weight is not too small (to avoid division by zero), break out of the loop
