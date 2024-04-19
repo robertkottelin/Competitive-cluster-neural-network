@@ -3,3 +3,4 @@
 rust/target/
 rust/target/debug/
 rust/Cargo.lock
+rust/network_data.db
