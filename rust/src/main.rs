@@ -2,17 +2,16 @@ mod neuron;
 mod cluster;
 mod layer;
 mod compann;
-// mod db;
+// mod db; // todo: lift out code for db into a separate module
 
 use compann::COMPANN;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 use std::path::Path;
+use rusqlite::{params, Connection, Result as SqliteResult, types::Type};
 
 extern crate serde;
 extern crate serde_json;
-
-use rusqlite::{params, Connection, Result as SqliteResult, types::Type};
 
 // Function to load neuron data from the database
 pub fn load_neuron_data(conn: &Connection) -> SqliteResult<Vec<(usize, usize, usize, Vec<f64>, f64)>> {
@@ -68,7 +67,7 @@ fn main() -> io::Result<()> {
     );
 
     // Train the network
-    for _ in 0..2 {
+    for _ in 0..2 { // 2 training iterations
         let file = File::open(Path::new(file_path))?;
         let reader = BufReader::new(file);
         for line in reader.lines() {
@@ -139,7 +138,7 @@ fn main() -> io::Result<()> {
             .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
     }
 
-    // Classify patterns in "formatted_vectors_all.txt"
+    // Classify patterns in "formatted_vectors_all.txt", use another file with new data here
     // Use the classify function in the main program
     let file = File::open(Path::new(file_path))?;
     let reader = BufReader::new(file);
