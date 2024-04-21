@@ -1,7 +1,6 @@
 use rand::prelude::*;
 use std::vec::Vec;
 
-// Define a struct to represent a neuron
 #[derive(Debug)]
 pub struct Neuron {
     pub weights: Vec<f64>,
@@ -9,7 +8,6 @@ pub struct Neuron {
 }
 
 impl Neuron {
-    // Constructor for the neuron
     pub fn new(input_count: usize) -> Neuron {
         let mut rng = thread_rng(); // Initialize a random number generator
         let mut weights: Vec<f64>; // Declare a vector to hold the neuron's weights
@@ -54,3 +52,6 @@ impl Neuron {
         });
     }
 }
+
+
+
