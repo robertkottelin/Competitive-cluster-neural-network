@@ -17,7 +17,6 @@ class Baptist(abc.ABC):
     
 import uuid
 
-
 class UuidBaptist(Baptist):
     
     def __init__(self):
